@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" role="img" aria-labelledby="title description">
+  <title id="title">Hafiz Foods menu placeholder</title>
+  <desc id="description">A plate and cutlery illustration for menu items without a photograph.</desc>
+  <rect width="1200" height="800" fill="#f4efe6"/>
+  <circle cx="600" cy="400" r="210" fill="#fff" stroke="#d8c7ad" stroke-width="24"/>
+  <circle cx="600" cy="400" r="135" fill="#f8e4bf"/>
+  <path d="M330 220v360M290 220v150q0 55 40 55t40-55V220M850 220v360M850 220q85 75 0 190" fill="none" stroke="#9a3412" stroke-linecap="round" stroke-width="28"/>
+  <text x="600" y="690" text-anchor="middle" font-family="Arial, sans-serif" font-size="48" font-weight="700" fill="#7c2d12">Hafiz Foods</text>
+</svg>

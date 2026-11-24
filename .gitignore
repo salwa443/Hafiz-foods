@@ -1,0 +1,26 @@
+node_modules/
+dist/
+.env
+*.log
+backend/uploads/
+backend/src/database/backups/
+.venv/
+venv/
+__pycache__/
+.vscode/
+
+# Unrelated local workspaces and scripts outside Hafiz Foods
+Manana/
+Recruitment-Agent-Project/
+app.py
+main.py
+prompts.py
+repo.py
+req.txt
+Sahilproject.py
+result_corrected_*.json
+
+# Local browser/integration artifacts
+fr02-integration-artifacts/
+fr03-e2e-*.png
+fr04-cart-menu.png

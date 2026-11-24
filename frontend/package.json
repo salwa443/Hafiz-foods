@@ -1,0 +1,43 @@
+{
+  "name": "qr-menu-frontend",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "test:cart": "node src/tests/cartCoreSmokeTest.js",
+    "test:item-dialog": "node src/tests/itemCustomizationDialogLifecycleSmokeTest.js",
+    "test:order-review": "node src/tests/orderReviewSmokeTest.js",
+    "test:order-submission": "node src/tests/orderSubmissionSmokeTest.js",
+    "test:kitchen-orders": "node src/tests/kitchenOrdersSmokeTest.js",
+    "test:kitchen-status-controls": "node src/tests/kitchenOrderStatusControlsSmokeTest.js",
+    "test:customer-order-status": "node src/tests/customerOrderStatusSmokeTest.js",
+    "test:customer-order-tracking-storage": "node src/tests/customerOrderTrackingStorageSmokeTest.js",
+    "test:customer-order-tracking-page": "node src/tests/customerOrderTrackingPageSmokeTest.js",
+    "test:track-your-orders": "node src/tests/trackYourOrdersSmokeTest.js",
+    "test:waiter-orders": "node src/tests/waiterOrdersSmokeTest.js",
+    "test:order-display-number": "node src/tests/orderDisplayNumberSmokeTest.js",
+    "lint": "eslint ."
+  },
+  "dependencies": {
+    "axios": "^1.13.2",
+    "lucide-react": "^0.554.0",
+    "qrcode.react": "^4.2.0",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
+    "react-router-dom": "^7.9.6",
+    "recharts": "^3.4.1",
+    "socket.io-client": "^4.8.1"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^5.1.0",
+    "@eslint/js": "^9.39.1",
+    "eslint": "^9.39.1",
+    "eslint-plugin-react-hooks": "^7.0.1",
+    "eslint-plugin-react-refresh": "^0.4.24",
+    "globals": "^16.5.0",
+    "vite": "^7.2.2"
+  }
+}
