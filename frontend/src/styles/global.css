@@ -107,6 +107,39 @@ textarea {
   gap: 1rem;
 }
 
+.staff-password-field {
+  display: grid;
+  gap: 0.4rem;
+}
+
+.staff-password-input {
+  position: relative;
+}
+
+.form-grid .staff-password-input input {
+  width: 100%;
+  padding-inline-end: 3rem;
+}
+
+.staff-password-toggle {
+  position: absolute;
+  inset-block: 0;
+  inset-inline-end: 0;
+  display: grid;
+  width: 2.75rem;
+  place-items: center;
+  color: inherit;
+  background: transparent;
+  border: 0;
+  border-radius: 0.5rem;
+  cursor: pointer;
+}
+
+.staff-password-toggle:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: -3px;
+}
+
 .auth-panel {
   display: grid;
   gap: 1.25rem;

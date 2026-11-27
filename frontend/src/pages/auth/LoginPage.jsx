@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Eye, EyeOff } from 'lucide-react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth.js';
 
@@ -15,6 +16,7 @@ function LoginPage() {
   const [formData, setFormData] = useState({ email: '', password: '' });
   const [errorMessage, setErrorMessage] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   function handleChange(event) {
     const { name, value } = event.target;
@@ -60,18 +62,29 @@ function LoginPage() {
           />
         </label>
 
-        <label>
-          Password
-          <input
-            name="password"
-            type="password"
-            value={formData.password}
-            onChange={handleChange}
-            autoComplete="current-password"
-            minLength={8}
-            required
-          />
-        </label>
+        <div className="staff-password-field">
+          <label htmlFor="staff-password">Password</label>
+          <div className="staff-password-input">
+            <input
+              id="staff-password"
+              name="password"
+              type={showPassword ? 'text' : 'password'}
+              value={formData.password}
+              onChange={handleChange}
+              autoComplete="current-password"
+              minLength={8}
+              required
+            />
+            <button
+              type="button"
+              className="staff-password-toggle"
+              aria-label={showPassword ? 'Hide password' : 'Show password'}
+              onClick={() => setShowPassword((visible) => !visible)}
+            >
+              {showPassword ? <EyeOff aria-hidden="true" /> : <Eye aria-hidden="true" />}
+            </button>
+          </div>
+        </div>
 
         {errorMessage && <p className="form-error">{errorMessage}</p>}
 
