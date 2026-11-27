@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { getReadyWaiterOrders, updateWaiterDelivery } from '../services/waiterOrderService.js';
 import { createWaiterSocket, WAITER_SOCKET_EVENTS } from '../services/waiterSocketService.js';
-import { mergeWaiterOrder } from '../utils/waiterOrderState.js';
+import { createWaiterQueueSync, mergeWaiterOrder } from '../utils/waiterOrderState.js';
 
 export function useWaiterOrders(token) {
   const [orders, setOrders] = useState([]);
@@ -10,59 +10,57 @@ export function useWaiterOrders(token) {
   const [success, setSuccess] = useState('');
   const [connectionStatus, setConnectionStatus] = useState('connecting');
   const [pendingOrderId, setPendingOrderId] = useState(null);
-  const loadInFlightRef = useRef(null);
-
-  const load = useCallback(() => {
-    if (loadInFlightRef.current) return loadInFlightRef.current;
-
-    setIsLoading(true); setError('');
-    const request = getReadyWaiterOrders()
-      .then((readyOrders) => {
-        setOrders(readyOrders);
-        setError('');
-      })
-      .catch(() => setError('Ready orders could not be loaded. Please try again.'))
-      .finally(() => {
-        setIsLoading(false);
-        loadInFlightRef.current = null;
-      });
-
-    loadInFlightRef.current = request;
-    return request;
-  }, []);
+  const queueRef = useRef(null);
+  const retry = useCallback(() => queueRef.current?.refresh(), []);
 
   useEffect(() => {
     if (!token) return undefined;
 
     // The REST queue must load even when the realtime connection is slow or unavailable.
-    const initialLoadTimer = window.setTimeout(load, 0);
+    const queue = createWaiterQueueSync({
+      loadOrders: getReadyWaiterOrders,
+      onSnapshot: setOrders,
+      onUpdate: (order) => setOrders((current) => mergeWaiterOrder(current, order)),
+      onLoading: setIsLoading,
+      onError: setError,
+    });
+    queueRef.current = queue;
+    const initialLoadTimer = window.setTimeout(queue.refresh, 0);
     const socket = createWaiterSocket(token);
-    const merge = (order) => setOrders((current) => mergeWaiterOrder(current, order));
-    socket.on('connect', () => { setConnectionStatus('connected'); load(); });
+    socket.on('connect', () => {
+      setConnectionStatus('connected');
+      void queue.refresh({ afterConnection: true });
+    });
     socket.on('disconnect', () => setConnectionStatus('disconnected'));
     socket.on('connect_error', () => setConnectionStatus('error'));
-    socket.on(WAITER_SOCKET_EVENTS.READY, merge);
-    socket.on(WAITER_SOCKET_EVENTS.UPDATED, merge);
+    socket.on(WAITER_SOCKET_EVENTS.READY, queue.receive);
+    socket.on(WAITER_SOCKET_EVENTS.UPDATED, queue.receive);
     socket.connect();
     return () => {
       window.clearTimeout(initialLoadTimer);
+      queue.stop();
+      queueRef.current = null;
       socket.off();
       socket.disconnect();
     };
-  }, [token, load]);
+  }, [token]);
 
   const act = useCallback(async (orderId, action) => {
     if (pendingOrderId) return;
+    const queue = queueRef.current;
     setPendingOrderId(orderId); setError(''); setSuccess('');
     try {
       const updated = await updateWaiterDelivery(orderId, action);
-      setOrders((current) => mergeWaiterOrder(current, updated));
+      if (queueRef.current !== queue) return;
+      queue?.receive(updated);
       setSuccess(action === 'claim' ? 'Order claimed.' : action === 'pickup' ? 'Order marked picked up.' : 'Order delivered to the table.');
     } catch (requestError) {
-      setError(requestError.response?.data?.message || 'The delivery action could not be completed.');
-      await load();
+      await queue?.refresh();
+      if (queueRef.current === queue) {
+        setError(requestError.response?.data?.message || 'The delivery action could not be completed.');
+      }
     } finally { setPendingOrderId(null); }
-  }, [pendingOrderId, load]);
+  }, [pendingOrderId]);
 
-  return { orders, isLoading, error, success, connectionStatus, pendingOrderId, retry: load, act };
+  return { orders, isLoading, error, success, connectionStatus, pendingOrderId, retry, act };
 }
