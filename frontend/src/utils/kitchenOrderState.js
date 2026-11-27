@@ -59,7 +59,7 @@ export function createKitchenOrderSession({
   };
   let isSynchronizing = false;
   let bufferedOrders = [];
-  let hasConnected = false;
+  let syncAfterConnection = false;
   let isStopped = false;
 
   function publishState(updates = {}) {
@@ -91,6 +91,10 @@ export function createKitchenOrderSession({
     } finally {
       bufferedOrders = [];
       isSynchronizing = false;
+      if (syncAfterConnection) {
+        syncAfterConnection = false;
+        void synchronize();
+      }
     }
   }
 
@@ -120,10 +124,10 @@ export function createKitchenOrderSession({
   function handleConnect() {
     publishState({ connectionStatus: 'connected' });
 
-    if (hasConnected) {
-      synchronize();
+    if (isSynchronizing) {
+      syncAfterConnection = true;
     } else {
-      hasConnected = true;
+      void synchronize();
     }
   }
 

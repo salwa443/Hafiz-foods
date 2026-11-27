@@ -78,7 +78,10 @@ assert.deepEqual(states.at(-1).orders.map((order) => order.orderId), ['ORD-1']);
 assert.equal(states.at(-1).isLoading, false);
 assert.equal(socket.connectCalls, 1);
 
+activeOrders = [firstOrder, secondOrder];
 socket.emitTest('connect');
+await flush();
+assert.deepEqual(states.at(-1).orders.map((order) => order.orderId), ['ORD-1', 'ORD-2']);
 socket.emitTest('kitchen:order:new', secondOrder);
 assert.deepEqual(states.at(-1).orders.map((order) => order.orderId), ['ORD-1', 'ORD-2']);
 socket.emitTest('kitchen:order:new', secondOrder);
@@ -89,7 +92,7 @@ socket.emitTest('disconnect');
 assert.equal(states.at(-1).connectionStatus, 'disconnected');
 socket.emitTest('connect');
 await flush();
-assert.equal(loadCalls, 2);
+assert.equal(loadCalls, 3);
 assert.deepEqual(states.at(-1).orders.map((order) => order.orderId), ['ORD-2']);
 assert.equal(states.at(-1).connectionStatus, 'connected');
 

@@ -108,7 +108,7 @@ socket.emitTest('connect');
 socket.emitTest('disconnect');
 socket.emitTest('connect');
 await flush();
-assert.equal(loadCalls, 2);
+assert.equal(loadCalls, 3);
 assert.deepEqual(states.at(-1).orders.map((item) => item.orderId), ['ORD-4']);
 
 session.stop();
