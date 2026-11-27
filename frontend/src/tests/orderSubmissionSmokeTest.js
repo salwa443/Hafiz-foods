@@ -9,7 +9,7 @@ import {
   submitOrderOnce,
 } from '../utils/orderSubmission.js';
 
-globalThis.localStorage = {
+globalThis.sessionStorage = {
   getItem() {
     return null;
   },

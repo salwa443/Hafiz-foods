@@ -13,7 +13,7 @@ import {
   createCustomerOrderStatusSession,
 } from '../utils/customerOrderStatusState.js';
 
-globalThis.localStorage = { getItem: () => null };
+globalThis.sessionStorage = { getItem: () => null };
 
 const initialOrder = {
   orderId: 'ORD-CUSTOMER-1',

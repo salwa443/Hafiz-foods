@@ -167,7 +167,7 @@ async function runTest() {
         setValue(password, 'StrongPassword123');
         document.querySelector('form').dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
         await waitFor(() => location.pathname === '/admin');
-        return { path: location.pathname, hasToken: Boolean(localStorage.getItem('staffToken')) };
+        return { path: location.pathname, hasToken: Boolean(sessionStorage.getItem('staffToken')) };
       })()
     `);
     record('admin logs in through browser UI', loginResult.path === '/admin' && loginResult.hasToken, loginResult.path);

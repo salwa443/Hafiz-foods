@@ -167,7 +167,7 @@ async function runTest() {
         setValue(password, 'StrongPassword123');
         document.querySelector('form').dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
         await waitFor(() => location.pathname === '/admin');
-        return { path: location.pathname, hasToken: Boolean(localStorage.getItem('staffToken')) };
+        return { path: location.pathname, hasToken: Boolean(sessionStorage.getItem('staffToken')) };
       })()
     `);
     record('admin logs in through browser UI', loginResult.path === '/admin' && loginResult.hasToken, loginResult.path);
@@ -184,7 +184,7 @@ async function runTest() {
           throw new Error('Timed out waiting for admin dashboard.');
         };
         await waitFor(() => document.querySelectorAll('.summary-card strong').length === 4);
-        const token = localStorage.getItem('staffToken');
+        const token = sessionStorage.getItem('staffToken');
         const response = await fetch('http://localhost:5000/api/admin/categories/summary', {
           headers: { Authorization: 'Bearer ' + token },
         });
@@ -209,7 +209,7 @@ async function runTest() {
 
     const setupResult = await runInPage(client, `
       (async () => {
-        const token = localStorage.getItem('staffToken');
+        const token = sessionStorage.getItem('staffToken');
         const name = 'Browser Menu Category ' + Date.now();
         const response = await fetch('http://localhost:5000/api/admin/categories', {
           method: 'POST',

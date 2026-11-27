@@ -8,7 +8,7 @@ import {
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
-  const [token, setToken] = useState(() => localStorage.getItem('staffToken'));
+  const [token, setToken] = useState(() => sessionStorage.getItem('staffToken'));
   const [isLoading, setIsLoading] = useState(Boolean(token));
 
   useEffect(() => {
@@ -22,7 +22,7 @@ export function AuthProvider({ children }) {
         const currentUser = await getCurrentStaffUser();
         setUser(currentUser);
       } catch {
-        localStorage.removeItem('staffToken');
+        sessionStorage.removeItem('staffToken');
         setToken(null);
         setUser(null);
       } finally {
@@ -35,7 +35,7 @@ export function AuthProvider({ children }) {
 
   const login = useCallback(async (credentials) => {
     const result = await loginStaff(credentials);
-    localStorage.setItem('staffToken', result.token);
+    sessionStorage.setItem('staffToken', result.token);
     setToken(result.token);
     setUser(result.user);
     return result.user;
@@ -47,7 +47,7 @@ export function AuthProvider({ children }) {
         await logoutStaff();
       }
     } finally {
-      localStorage.removeItem('staffToken');
+      sessionStorage.removeItem('staffToken');
       setToken(null);
       setUser(null);
     }
